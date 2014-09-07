@@ -1,0 +1,14 @@
+name: Kits
+main: me.Stijn.Kits.Kits
+version: 0.0.2
+author: Stijn van Nieulande
+description: Kits
+commands:
+   Kit:
+      description: Kits commands
+      permission: ngnfw.kits
+      permission-message: You don't have the premission to use the Kits commands.
+   Kits:
+      description: Kits commands
+      permission: ngnfw.kits
+      permission-message: You don't have the premission to use the Kits commands.

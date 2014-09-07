@@ -1,0 +1,168 @@
+package me.Stijn.NGNFWKitPvP;
+
+import java.io.File;
+import java.util.logging.Logger;
+
+import me.Stijn.minigame.Arena;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class Main extends JavaPlugin implements Listener{
+	
+	FileConfiguration config;
+	File cfile;
+    public final Logger logger = Logger.getLogger("Minecraft");
+    public PluginDescriptionFile pdfFile = getDescription();
+	
+	@Override
+	public void onEnable() {
+		logger.info("*--==[ NGNFW KitPvP ]==--*");
+		logger.info("[" + pdfFile.getName() + "] v" + pdfFile.getVersion() + " is now enabled!");
+		Bukkit.getServer().getPluginManager().registerEvents(this, this);
+		config = getConfig();
+		config.options().copyDefaults(true);
+		saveConfig();
+		cfile = new File(getDataFolder(), "config.yml");
+	}
+	
+	@Override
+	public void onDisable() {
+		logger.info("*--==[ NGNFW KitPvP ]==--*");
+		logger.info("[" + pdfFile.getName() + "] v" + pdfFile.getVersion() + " is now disabled!");
+		saveConfig();
+	}
+
+// ##########  COMMANDS  ########## COMMANDS  ##########  COMMANDS  ##########
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    if(sender instanceof Player) {
+	        String title = getConfig().getString("Title");
+            Player p = (Player) sender;
+            Location loc = p.getLocation();
+            if(label.equalsIgnoreCase("KitPvP")) {
+                    if(args.length > 0) {
+                            if(args[0].equalsIgnoreCase("Create") && p.isOp()) {
+                         	   if(args.length > 1) {
+                                    String name = args[1];
+                                    if(am.getArena(name) != null) {
+                                            p.sendMessage(title + ChatColor.RED + "Arena with the name " + name + " already exists!");
+                                    } else {
+                                            am.CreateArena(loc, name);
+                                            p.sendMessage(title + ChatColor.GREEN + "Arena with the name " + name + " succesfully created!");
+                                            p.sendMessage(title + ChatColor.YELLOW + "You now need to set the Spawn and the Lobby Locations.");
+                                    }
+                         	   } else {
+                         		   p.sendMessage(title + ChatColor.RED + "Usage: /minigame create <arena>");
+                         	   }
+                            } else if(args[0].equalsIgnoreCase("Join")) {
+                                
+                         	   if(am.isinGame(p)) {
+                             	   p.sendMessage(title + ChatColor.RED + "You're already in game.");
+                             	   return false;
+                                }
+                         	   if(args.length > 1) {
+                                    String arenaname = args[1];
+                                    if(args[1] == null) {
+                                            p.sendMessage(title + ChatColor.RED + "Command usage: /Minigame Join <arena>.");
+                                            return false;
+                                    }
+                                    
+                                    Arena arena = am.getArena(arenaname);
+                                    if(arena == null) {
+                                            p.sendMessage(title + ChatColor.RED + "No Arena found with that name.");
+                                            return false;
+                                    }
+                                   
+                                    am.addPlayer(p, arena);
+                                    p.sendMessage(title + ChatColor.GREEN + "Succesfully joined arena: " + arena.getName());
+                                   
+                                    Location lobby = arena.getLobby();
+                                    p.teleport(lobby);
+                         	   } else {
+                         		   p.sendMessage(title + ChatColor.RED + "Command usage: /Minigame Join <arena>.");
+                         	   }
+                                   
+                            }
+                               
+                    } else {
+                            p.sendMessage(title);
+                            p.sendMessage(ChatColor.GRAY + "- /mg join <arena>");
+                            p.sendMessage(ChatColor.GRAY + "- /mg leave <arena>");
+                            if(p.isOp()) {
+                         	   p.sendMessage(ChatColor.GRAY + "- /mg create <name>");
+                         	   p.sendMessage(ChatColor.GRAY + "- /mg setlobby <arena>");
+                         	   p.sendMessage(ChatColor.GRAY + "- /mg setspawn <arena>");
+                            }
+                    }
+            }
+    }
+    return false;
+}
+    
+// ##########  Sign Create  ########## Sign Create  ##########  Sign Create  ##########
+	@Override
+	protected boolean onSignCreate(final ISign sign, final User player, final String username, final IEssentials ess) throws SignException
+	{
+		validateTrade(sign, 3, ess);
+		final String warpName = sign.getLine(1);
+
+		if (warpName.isEmpty())
+		{
+			sign.setLine(1, "§c<Warp name>");
+			throw new SignException(tl("invalidSignLine", 1));
+		}
+		else
+		{
+			try
+			{
+				ess.getWarps().getWarp(warpName);
+			}
+			catch (Exception ex)
+			{
+				throw new SignException(ex.getMessage(), ex);
+			}
+			final String group = sign.getLine(2);
+			if ("Everyone".equalsIgnoreCase(group) || "Everybody".equalsIgnoreCase(group))
+			{
+				sign.setLine(2, "§2Everyone");
+			}
+			return true;
+		}
+	}
+    
+// ##########  Sign Interact  ########## Sign Interact  ##########  Sign Interact  ##########
+	@Override
+	protected boolean onSignInteract(final ISign sign, final User player, final String username, final IEssentials ess) throws SignException, ChargeException
+	{
+		final String warpName = sign.getLine(1);
+		final String group = sign.getLine(2);
+		if ((!group.isEmpty()
+			 && ("§2Everyone".equals(group)
+				 || player.inGroup(group)))
+			|| (group.isEmpty() && (!ess.getSettings().getPerWarpPermission() || player.isAuthorized("essentials.warps." + warpName))))
+		{
+			final Trade charge = getTrade(sign, 3, ess);
+			try
+			{
+				player.getTeleport().warp(player, warpName, charge, TeleportCause.PLUGIN);
+				Trade.log("Sign", "Warp", "Interact", username, null, username, charge, sign.getBlock().getLocation(), ess);
+			}
+			catch (Exception ex)
+			{
+				throw new SignException(ex.getMessage(), ex);
+			}
+			return true;
+		}
+		return false;
+	}
+
+}

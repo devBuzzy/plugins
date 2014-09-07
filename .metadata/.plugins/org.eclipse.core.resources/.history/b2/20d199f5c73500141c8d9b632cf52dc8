@@ -1,0 +1,42 @@
+package me.Stijn.RankTag;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+
+public class Main extends JavaPlugin implements Listener{
+	
+	@Override
+	public void onEnable() {
+		Bukkit.getServer().getPluginManager().registerEvents(this, this);
+		
+	}
+	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent e){
+		Player p = e.getPlayer();
+		ScoreboardManager manager = Bukkit.getScoreboardManager();
+		Scoreboard board = manager.getNewScoreboard();
+		 
+		Objective objective = board.registerNewObjective("lives", "dummy");
+		objective.setDisplayName("lives");
+		objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
+		 
+		for(Player online : Bukkit.getOnlinePlayers()){
+		  Score score = objective.getScore(online);
+		  score.setScore(5); //Example
+		}
+		 
+		for(Player online : Bukkit.getOnlinePlayers()){
+		online.setScoreboard(board);
+		}
+	}
+}

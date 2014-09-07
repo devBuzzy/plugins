@@ -1,0 +1,10 @@
+name: NGNFWBlockEffects
+main: me.Stijn.NGNFWBlockEffects.Main
+version: 0.0.3
+author: Stijn van Nieulande
+description: NGNFWBlockEffects
+commands:
+   NGNFWBlockEffects:
+      description: NGNFWBlockEffects commands
+      permission: ngnfw.blockeffects
+      permission-message: You don't have the premission to use the NGNFWBlockEffects commands.

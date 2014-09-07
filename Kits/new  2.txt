@@ -1,0 +1,24 @@
+  @EventHandler
+  public void onPlayer(SignChangeEvent e){
+      Player p = e.getPlayer();
+      if(e.getLine(0).equalsIgnoreCase("kit")){
+    	  if (p.hasPermission("kits.sign.create")) {
+    		  if(e.getLine(1).length() > 0){
+        	      p.sendMessage("Kit Sign Made!");
+        	      String arg = e.getLines()[1];
+        	      e.setLine(2, arg);
+        	      e.setLine(0, ChatColor.GREEN + "[" + ChatColor.AQUA + "KitPvP" + ChatColor.GREEN + "]");
+        	      e.setLine(1, ChatColor.DARK_BLUE + "Get"); 
+    		  } else {
+        	      p.sendMessage("Please add the kit name on line 2!");
+        	      e.setLine(0, ChatColor.GREEN + "[" + ChatColor.AQUA + "KitPvP" + ChatColor.GREEN + "]");
+        	      e.setLine(1, ChatColor.BLUE + "Please add");
+        	      e.setLine(2, ChatColor.BLUE + "the kit name");
+        	      e.setLine(3, ChatColor.BLUE + "on line 2");
+    		  }
+    	  } else {
+  	        p.sendMessage("You don't have permission to create kit signs");
+  	        e.getBlock().breakNaturally();
+    	  }
+}
+}

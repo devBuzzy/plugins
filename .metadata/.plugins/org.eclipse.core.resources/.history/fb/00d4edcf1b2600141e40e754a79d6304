@@ -1,0 +1,172 @@
+package me.Stijn.NGNFWKitPvP;
+
+import java.io.File;
+import java.util.logging.Logger;
+
+import me.Stijn.minigame.Arena;
+import net.minecraft.server.v1_7_R3.Block;
+import net.minecraft.util.com.mojang.authlib.yggdrasil.response.User;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.block.Sign;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class Main extends JavaPlugin implements Listener{
+	
+	FileConfiguration config;
+	File cfile;
+    public final Logger logger = Logger.getLogger("Minecraft");
+    public PluginDescriptionFile pdfFile = getDescription();
+	
+	@Override
+	public void onEnable() {
+		logger.info("*--==[ NGNFW KitPvP ]==--*");
+		logger.info("[" + pdfFile.getName() + "] v" + pdfFile.getVersion() + " is now enabled!");
+		Bukkit.getServer().getPluginManager().registerEvents(this, this);
+		config = getConfig();
+		config.options().copyDefaults(true);
+		saveConfig();
+		cfile = new File(getDataFolder(), "config.yml");
+	}
+	
+	@Override
+	public void onDisable() {
+		logger.info("*--==[ NGNFW KitPvP ]==--*");
+		logger.info("[" + pdfFile.getName() + "] v" + pdfFile.getVersion() + " is now disabled!");
+		saveConfig();
+	}
+
+// ##########  COMMANDS  ########## COMMANDS  ##########  COMMANDS  ##########
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    if(sender instanceof Player) {
+	        String title = getConfig().getString("Title");
+            Player p = (Player) sender;
+            Location loc = p.getLocation();
+            if(label.equalsIgnoreCase("KitPvP")) {
+                    if(args.length > 0) {
+                            if(args[0].equalsIgnoreCase("Create") && p.isOp()) {
+                         	   if(args.length > 1) {
+                                    String name = args[1];
+                                    if(am.getArena(name) != null) {
+                                            p.sendMessage(title + ChatColor.RED + "Arena with the name " + name + " already exists!");
+                                    } else {
+                                            am.CreateArena(loc, name);
+                                            p.sendMessage(title + ChatColor.GREEN + "Arena with the name " + name + " succesfully created!");
+                                            p.sendMessage(title + ChatColor.YELLOW + "You now need to set the Spawn and the Lobby Locations.");
+                                    }
+                         	   } else {
+                         		   p.sendMessage(title + ChatColor.RED + "Usage: /minigame create <arena>");
+                         	   }
+                            } else if(args[0].equalsIgnoreCase("Join")) {
+                                
+                         	   if(am.isinGame(p)) {
+                             	   p.sendMessage(title + ChatColor.RED + "You're already in game.");
+                             	   return false;
+                                }
+                         	   if(args.length > 1) {
+                                    String arenaname = args[1];
+                                    if(args[1] == null) {
+                                            p.sendMessage(title + ChatColor.RED + "Command usage: /Minigame Join <arena>.");
+                                            return false;
+                                    }
+                                    
+                                    Arena arena = am.getArena(arenaname);
+                                    if(arena == null) {
+                                            p.sendMessage(title + ChatColor.RED + "No Arena found with that name.");
+                                            return false;
+                                    }
+                                   
+                                    am.addPlayer(p, arena);
+                                    p.sendMessage(title + ChatColor.GREEN + "Succesfully joined arena: " + arena.getName());
+                                   
+                                    Location lobby = arena.getLobby();
+                                    p.teleport(lobby);
+                         	   } else {
+                         		   p.sendMessage(title + ChatColor.RED + "Command usage: /Minigame Join <arena>.");
+                         	   }
+                                   
+                            }
+                               
+                    } else {
+                            p.sendMessage(title);
+                            p.sendMessage(ChatColor.GRAY + "- /mg join <arena>");
+                            p.sendMessage(ChatColor.GRAY + "- /mg leave <arena>");
+                            if(p.isOp()) {
+                         	   p.sendMessage(ChatColor.GRAY + "- /mg create <name>");
+                         	   p.sendMessage(ChatColor.GRAY + "- /mg setlobby <arena>");
+                         	   p.sendMessage(ChatColor.GRAY + "- /mg setspawn <arena>");
+                            }
+                    }
+            }
+    }
+    return false;
+}
+    
+// ##########  Sign Create  ########## Sign Create  ##########  Sign Create  ##########
+	@EventHandler
+	public void onPlayer(SignChangeEvent e){
+		String title = getConfig().getString("Title");
+	    Player p = e.getPlayer();
+	    final Sign s = (Sign) e.getBlock().getState();
+	    if(e.getLine(0).equalsIgnoreCase("[test]")){
+	    	if (p.hasPermission("ngnfw.kitpvp.create")) {
+	    		if(e.getLine(1).length() > 0){
+		    		p.sendMessage(title + " Sign created!");
+	        	    String arg = e.getLines()[1];
+	        	    e.setLine(1, ChatColor.YELLOW + arg);
+	        	    e.setLine(0, title);
+	        	    e.setLine(2, ChatColor.BOLD + "Status");
+	        	    e.setLine(3, ChatColor.BOLD + "Players");
+	    		} else {
+	        	    p.sendMessage("Please add the world name on line 2!");
+	        	    ((org.bukkit.block.Block) s).breakNaturally();
+	    		  }
+	    	} else {
+	    		((org.bukkit.block.Block) s).breakNaturally();
+	    		p.sendMessage(title + " You don't have the permission to create a KitPvP sign!");
+	    	}
+	    }
+	}
+    
+// ##########  Sign Interact  ########## Sign Interact  ##########  Sign Interact  ##########
+	public void onPlayerInteract(PlayerInteractEvent event)
+    {
+        //Check if the action in the event is a RightClickBlock action
+        if(event.getAction() == Action.RIGHT_CLICK_BLOCK)
+        {
+            //Save the clickedBlock in a variable (i)
+            Block i = event.getClickedBlock();
+            //Check if the block is a instance of the Class Sign
+            if(i.getState() instanceof Sign)
+            {
+                //Get the BlockState
+                BlockState stateBlock = i.getState();
+                //Cast the block to the object Sign
+                Sign sign = (Sign) stateBlock;
+                //Check if the text on the first line of the sign equals with "[HEAL]"
+                if(sign.getLine(0).equalsIgnoreCase("[HEAL]")){
+                    //Get the player of the event and save it in a variable (player)
+                    Player player = event.getPlayer();
+                    //Calculate the new Health
+                    //Current Health of Player (player.getHealth()) + The health on the 3rd line of the sign (sign.getLine(2))
+                    //You need to parse it to an Integer because it's stored as a String
+                    int newHealth = player.getHealth() + Integer.parseInt(sign.getLine(2));
+                    //Set the new health for the player
+                    player.setHealth(newHealth);
+                }
+            }
+        }
+    }
+
+}

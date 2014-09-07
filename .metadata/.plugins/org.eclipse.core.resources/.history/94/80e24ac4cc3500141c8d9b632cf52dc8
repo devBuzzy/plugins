@@ -1,0 +1,36 @@
+package me.Stijn.RankTag;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+
+public class Main extends JavaPlugin implements Listener{
+	
+	@Override
+	public void onEnable() {
+		Bukkit.getServer().getPluginManager().registerEvents(this, this);
+		
+	}
+	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent e){
+		Player p = (Player)this.player.getSingle(event);
+        String s = (String)this.string.getSingle(event);
+        if ((p == null) || (s == null)) return;
+        ScoreboardManager sbManager = Bukkit.getScoreboardManager();
+        Scoreboard sb = sbManager.getNewScoreboard();
+        Objective OBJECTIVE = sb.registerNewObjective("custom", "dummy");
+        OBJECTIVE.setDisplayName(s);
+        OBJECTIVE.setDisplaySlot(DisplaySlot.BELOW_NAME);
+        p.setScoreboard(sb);
+	}
+}

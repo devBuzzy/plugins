@@ -1,0 +1,46 @@
+package me.Stijn.NGNFWBlockEffects.commands;
+
+import me.Stijn.NGNFWBlockEffects.Main;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+
+public class Commands implements Listener {
+
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		if (sender instanceof Player) {
+			Player p = (Player) sender;
+			String titlecommands = Main.config.getString("TitleCommands");
+			if (label.equalsIgnoreCase("NGNFWBlockEffects")) {
+				if (args.length > 0) {
+					// reload
+					if (args[0].equalsIgnoreCase("reload")) {
+						p.sendMessage(ChatColor.translateAlternateColorCodes('&', titlecommands) + ChatColor.AQUA + " Config reloaded!");
+						System.out.println("NGNFW Block Effects > Config reloaded!");
+						Main.config.
+					}
+					// blocks
+					if (args[0].equalsIgnoreCase("blocks")) {
+						openGUI(p);
+					}
+				} else {
+					p.sendMessage(ChatColor.translateAlternateColorCodes('&', titlecommands));
+					p.sendMessage(ChatColor.GREEN + "- " + ChatColor.WHITE + "/Portal " + ChatColor.GREEN + "join" + ChatColor.AQUA + " <arena>");
+					p.sendMessage(ChatColor.GREEN + "- " + ChatColor.WHITE + "/Portal " + ChatColor.GREEN + "leave" + ChatColor.AQUA + " <arena>");
+					if (p.isOp()) {
+						sender.sendMessage(ChatColor.AQUA + "-----=[ " + ChatColor.BLUE + "N" + ChatColor.RED + "G" + ChatColor.GREEN + "N" + ChatColor.WHITE + "F" + ChatColor.GREEN + "W" + ChatColor.AQUA + " ]=-----");
+						sender.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "This plugin is made by: " + ChatColor.BLUE + "" + ChatColor.ITALIC + pdfFile.getAuthors());
+						sender.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Version: " + ChatColor.BLUE + "" + ChatColor.ITALIC + pdfFile.getVersion());
+						sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.ITALIC + "www.ngnfw.nl");
+						sender.sendMessage(ChatColor.AQUA + "-----=[ " + ChatColor.BLUE + "N" + ChatColor.RED + "G" + ChatColor.GREEN + "N" + ChatColor.WHITE + "F" + ChatColor.GREEN + "W" + ChatColor.AQUA + " ]=-----");
+					}
+				}
+			}
+		}
+		return false;
+	}
+}

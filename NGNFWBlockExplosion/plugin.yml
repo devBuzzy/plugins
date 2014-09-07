@@ -1,0 +1,5 @@
+name: NGNFWBlockExplosion
+main: me.Stijn.NGNFWBlockExplosion.BlockExplosion
+version: 0.0.1
+author: Stijn van Nieulande
+description: BlockExplosion

@@ -1,0 +1,11 @@
+name: NGNFWGuns
+main: me.Stijn.NGNFWGuns.Guns
+version: 0.0.1
+author: Stijn van Nieulande
+description: NGNFWGuns
+commands:
+   NGNFWGuns:
+      description: NGNFWGuns commands
+      usage: /ngnfwguns
+      permission: ngnfw.guns
+      permission-message: You don't have the premission to use the Guns commands.

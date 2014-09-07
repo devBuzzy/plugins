@@ -1,0 +1,19 @@
+name: NGN
+main: me.Stijn.NGN.NGN
+version: 0.0.1
+author: Stijn van Nieulande
+description: Nano Games Network
+commands:
+   NGN:
+      description: Nano Games Network commands
+      usage: /ngn
+      permission: ngn.ngn
+      permission-message: You don't have the premission to use the NGN commands.
+   InvAnimation:
+      description: InvAnimation
+      usage: /InvAnimation
+      permission: ngn.invanimation
+      permission-message: You don't have the premission to use the InvAnimation commands.
+   cast:
+      usage: /cast
+   GetItem:

@@ -1,0 +1,116 @@
+package me.Stijn.NGNFWBlockEffects;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.metadata.Metadatable;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
+
+public class Main extends JavaPlugin implements Listener {
+
+	public static FileConfiguration config;
+	File cfile;
+	public final Logger logger = Logger.getLogger("Minecraft");
+	public PluginDescriptionFile pdfFile = getDescription();
+
+	@Override
+	public void onEnable() {
+		logger.info("*--==[ NGNFW Block Effects ]==--*");
+		logger.info("[" + pdfFile.getName() + "] v" + pdfFile.getVersion() + " is now enabled!");
+		Bukkit.getServer().getPluginManager().registerEvents(this, this);
+		config = getConfig();
+		config.addDefault("TitleCommands", "'&f&lBlock &a&lEffects'");
+		config.addDefault("Launchpad.BlockId", "OBSIDIAN");
+		config.addDefault("Trampoline.BlockId", "COAL_BLOCK");
+		config.addDefault("Run.BlockId", "ICE");
+		config.options().copyDefaults(true);
+		// ### HEADER ###
+		config.options().header(
+				"#####################################################" + "\n         Plugin made by Stijn van Nieulande         #" + "\n#####################################################" + "\n                                                    #" + "\n  ##    ##  ########  ##    ##  ######  ##      ##  #" + "\n  ####  ##  ##        ####  ##  ##      ##      ##  #" + "\n  ##  ####  ##  ####  ##  ####  ######  ##      ##  #" + "\n  ##    ##  ##    ##  ##    ##  ##      ##  ##  ##  #" + "\n  ##    ##  ########  ##    ##  ##        ##  ##    #" + "\n                                                    #" + "\n#####################################################" + "\n               Website:  www.ngnfw.nl               #" + "\n#####################################################");
+		config.options().copyHeader(true);
+		// end of Header
+		saveConfig();
+		cfile = new File(getDataFolder(), "config.yml");
+	}
+
+	@Override
+	public void onDisable() {
+		logger.info("*--==[ NGNFW Block Effects ]==--*");
+		logger.info("[" + pdfFile.getName() + "] v" + pdfFile.getVersion() + " is now disabled!");
+		saveConfig();
+	}
+	
+	// ########## Block Effects ##################################################################
+	
+
+	// @EventHandler
+	// public void onWalk(PlayerMoveEvent e) {
+	//
+	// }
+
+	@EventHandler
+	public void onPlayerDamage(EntityDamageEvent e) {
+		if (e.getEntity() instanceof Player) {
+			Player p = (Player) e.getEntity();
+			if (e.getCause() == DamageCause.FALL && jumpers.contains(p)) {
+				e.setDamage(0.0);
+				jumpers.remove(p);
+			}
+		}
+	}
+
+	@EventHandler
+	public void onBlockPlaceEvent(BlockPlaceEvent e) {
+		Block b = e.getBlock();
+		ItemStack i = e.getItemInHand();
+
+		if (i.getItemMeta().getDisplayName() == "IceEffect") {
+			setMetadata(b, "IceEffect", "h", this);
+
+		}
+	}
+
+	
+
+	public PluginDescriptionFile getPdfFile() {
+		return pdfFile;
+	}
+
+	public void setPdfFile(PluginDescriptionFile pdfFile) {
+		this.pdfFile = pdfFile;
+	}
+	
+	// ##########
+
+}

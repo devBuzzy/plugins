@@ -1,0 +1,203 @@
+package me.Stijn.NGNFWBlockEffects;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.block.BlockFace;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.metadata.Metadatable;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
+
+public class BlockEffects extends JavaPlugin implements Listener{
+	
+	FileConfiguration config;
+	File cfile;
+    public final Logger logger = Logger.getLogger("Minecraft");
+    public PluginDescriptionFile pdfFile = getDescription();
+	
+	private ArrayList<Player> jumpers = new ArrayList<Player>();
+	public static Effect effectz = Effect.valueOf("STEP_SOUND");
+	
+	@Override
+	public void onEnable() {
+		logger.info("*--==[ NGNFW Block Effects ]==--*");
+		logger.info("[" + pdfFile.getName() + "] v" + pdfFile.getVersion() + " is now enabled!");
+		Bukkit.getServer().getPluginManager().registerEvents(this, this);
+		config = getConfig();
+		config.addDefault("TitleCommands", "'&f&lBlock &a&lEffects'");
+		config.addDefault("Launchpad.BlockId", "OBSIDIAN");
+		config.addDefault("Trampoline.BlockId", "COAL_BLOCK");
+		config.addDefault("Run.BlockId", "ICE");
+		config.options().copyDefaults(true);
+		// ### HEADER ###
+		config.options().header(
+				"#####################################################"
+			+ "\n         Plugin made by Stijn van Nieulande         #"
+			+ "\n#####################################################"
+			+ "\n                                                    #"
+			+ "\n  ##    ##  ########  ##    ##  ######  ##      ##  #"
+			+ "\n  ####  ##  ##        ####  ##  ##      ##      ##  #"
+			+ "\n  ##  ####  ##  ####  ##  ####  ######  ##      ##  #"
+			+ "\n  ##    ##  ##    ##  ##    ##  ##      ##  ##  ##  #"
+			+ "\n  ##    ##  ########  ##    ##  ##        ##  ##    #"
+			+ "\n                                                    #"
+			+ "\n#####################################################"
+			+ "\n               Website:  www.ngnfw.nl               #"
+			+ "\n#####################################################"
+			);
+        config.options().copyHeader(true);
+        // end of Header
+		saveConfig();
+		cfile = new File(getDataFolder(), "config.yml");
+	}
+	
+    @Override
+    public void onDisable() {
+         logger.info("*--==[ NGNFW Block Effects ]==--*");
+    		logger.info("[" + pdfFile.getName() + "] v" + pdfFile.getVersion() + " is now disabled!");
+    		saveConfig();
+    }
+	
+	//COMMANDS
+ // ##########  COMMANDS  ########## COMMANDS  ##########  COMMANDS  ############################
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+            if(sender instanceof Player) {
+                    Player p = (Player) sender;
+                    String titlecommands = getConfig().getString("TitleCommands");
+                    if(label.equalsIgnoreCase("NGNFWBlockEffects")) {
+                            if(args.length > 0) {
+//########## RELOAD  ###########################################################################
+                                     if(args[0].equalsIgnoreCase("reload")) {
+                                    	p.sendMessage(ChatColor.translateAlternateColorCodes('&', titlecommands) + ChatColor.AQUA + " Config reloaded!");
+                                    	System.out.println("NGNFW Block Effects > Config reloaded!");
+                                    	reloadConfig();
+                                   }     
+//########## TEST  ###########################################################################
+                                     if(args[0].equalsIgnoreCase("test")) {
+                                    	p.getInventory().addItem(make());
+                                    	System.out.println("NGNFW Block Effects > Config reloaded!");
+                                    	reloadConfig();
+                                   }     
+//########## Default command  ##################################################################
+                        	} else {
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', titlecommands) );
+                                p.sendMessage(ChatColor.GREEN + "- " + ChatColor.WHITE + "/Portal " + ChatColor.GREEN + "join" + ChatColor.AQUA + " <arena>");
+                                p.sendMessage(ChatColor.GREEN + "- " + ChatColor.WHITE + "/Portal " + ChatColor.GREEN + "leave" + ChatColor.AQUA + " <arena>");
+                                if(p.isOp()) {
+                                	sender.sendMessage(ChatColor.AQUA + "-----=[ " + ChatColor.BLUE + "N" + ChatColor.RED + "G" + ChatColor.GREEN + "N" + ChatColor.WHITE + "F" + ChatColor.GREEN + "W" + ChatColor.AQUA + " ]=-----");
+                        			sender.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "This plugin is made by: " + ChatColor.BLUE + "" + ChatColor.ITALIC + pdfFile.getAuthors());
+                        			sender.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Version: " + ChatColor.BLUE + "" + ChatColor.ITALIC + pdfFile.getVersion());
+                        			sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.ITALIC +  "www.ngnfw.nl");
+                        			sender.sendMessage(ChatColor.AQUA + "-----=[ " + ChatColor.BLUE + "N" + ChatColor.RED + "G" + ChatColor.GREEN + "N" + ChatColor.WHITE + "F" + ChatColor.GREEN + "W" + ChatColor.AQUA + " ]=-----");
+                                }
+                             }
+                    }
+            }
+            return false;
+    }
+	//end of COMMANDS
+	
+	@EventHandler
+	public void onMove(PlayerMoveEvent e) {
+	// *LaunchPad
+		if (e.getTo().getBlock().getRelative(BlockFace.DOWN).getType() == Material.getMaterial(getConfig().getString("Launchpad.BlockId"))) {
+			e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().multiply(10));
+			e.getPlayer().setVelocity(new Vector(e.getPlayer().getVelocity().getBlockX(), 1.0D, e.getPlayer().getVelocity().getZ()));
+			Player player = e.getPlayer();
+			Location loc = player.getLocation();
+			loc.getWorld().playEffect(loc, Effect.SMOKE, 69);
+			loc.getWorld().playEffect(loc, Effect.MOBSPAWNER_FLAMES, 69);
+			jumpers.add(e.getPlayer());
+		}
+	// *Trampoline
+		if (e.getTo().getBlock().getRelative(BlockFace.DOWN).getType() == Material.getMaterial(getConfig().getString("Trampoline.BlockId"))) {
+			e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().multiply(0));
+			e.getPlayer().setVelocity(new Vector(e.getPlayer().getVelocity().getBlockX(), 2.0D, e.getPlayer().getVelocity().getZ()));
+			Player player = e.getPlayer();
+			Location loc = player.getLocation();
+			loc.getWorld().playEffect(loc, Effect.EXPLOSION_LARGE, 69);
+			loc.getWorld().playEffect(loc, Effect.MOBSPAWNER_FLAMES, 69);
+			loc.getWorld().playSound(loc, Sound.ENDERMAN_TELEPORT, 69, 1);
+			jumpers.add(e.getPlayer());
+		}
+	// *Run
+		if (e.getTo().getBlock().getRelative(BlockFace.DOWN).getType() == Material.getMaterial(getConfig().getString("Run.BlockId"))) {
+			
+			Player player = e.getPlayer();
+			Location loc = player.getLocation();
+			
+			Location locBlock = new Location(player.getWorld(), e.getTo().getX(), e.getTo().getY() - 1, e.getTo().getZ());
+			
+			if (getMetadata(locBlock.getBlock(), "IceEffect", this).toString() == "h"){
+				loc.getWorld().playEffect(loc, Effect.COLOURED_DUST, 69);
+				loc.getWorld().playEffect(loc, Effect.SPLASH, 69);
+				loc.getWorld().playEffect(loc, Effect.FLYING_GLYPH, 69);
+				loc.getWorld().playEffect(loc, Effect.CRIT, 69);
+				PotionEffect speed = PotionEffectType.SPEED.createEffect(200, 7); // (sec [100 = 5sec], speed)
+	            player.addPotionEffect(speed, true);
+			}
+		}
+	}
+	
+	//@EventHandler
+	//public void onWalk(PlayerMoveEvent e) {
+	//	
+	//}
+	
+	@EventHandler
+	public void onPlayerDamage(EntityDamageEvent e) {
+		if (e.getEntity() instanceof Player) {
+			Player p = (Player) e.getEntity();
+			if (e.getCause() == DamageCause.FALL && jumpers.contains(p)) {
+				e.setDamage(0.0);
+				jumpers.remove(p);
+			}
+		}
+	}
+	
+	public void setMetadata(Metadatable object, String key, Object value, Plugin plugin) {
+		object.setMetadata(key, new FixedMetadataValue(plugin,value));
+	}
+		 
+	public Object getMetadata(Metadatable object, String key, Plugin plugin) {
+		List<MetadataValue> values = object.getMetadata(key);  
+		for (MetadataValue value : values) {
+			// Plugins are singleton objects, so using == is safe here
+			if (value.getOwningPlugin() == plugin) {
+				return value.value();
+			}
+		}
+	return null;
+	}
+	
+	public ItemStack make() {
+		ItemStack item = new ItemStack(Material.ICE	, 1, (short) 0);
+		setMetadata((Metadatable) item, "IceEffect", "h", this);
+		return item;
+	}
+}

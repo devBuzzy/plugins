@@ -1,0 +1,11 @@
+name: TabList
+main: me.Stijn.TabList.Main
+version: 0.0.1
+author: Stijn van Nieulande
+description: Tablist
+commands:
+   NGN:
+      description: Tablist commands
+      usage: /tablist
+      permission: tablist.commands
+      permission-message: You don't have the premission to use the Tablist commands.

@@ -1,0 +1,5 @@
+name: NGNFWDeathToWorldSpawn
+main: me.Stijn.NGNFWDeathToWorldSpawn.DeathToWorldSpawn
+version: 0.0.1
+author: Stijn van Nieulande
+description: NGNFWDeathToWorldSpawn

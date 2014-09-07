@@ -1,0 +1,12 @@
+package me.Stijn.NGNFWBlockEffects.commands;
+
+import me.Stijn.NGNFWBlockEffects.menu.Menu;
+
+import org.bukkit.event.Listener;
+
+public class inv implements Listener {
+	
+	public static Menu menu;
+	
+	  
+}

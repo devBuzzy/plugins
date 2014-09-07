@@ -1,0 +1,7 @@
+package me.Stijn.TagRank;
+
+import org.bukkit.event.Listener;
+
+public class TagRank implements Listener {
+
+}

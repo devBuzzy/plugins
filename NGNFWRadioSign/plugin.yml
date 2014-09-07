@@ -1,0 +1,8 @@
+name: NGNFWRadioSign
+main: me.Stijn.NGNFWRadioSign.RadioSign
+version: 0.0.1
+author: Stijn van Nieulande
+description: NGNFWRadioSign
+commands:
+   NGNFWRadioSign:
+      description: NGNFW Radio Sign!

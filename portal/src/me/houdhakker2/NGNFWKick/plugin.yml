@@ -1,0 +1,11 @@
+name: NGNFWKick
+main: me.Stijn.NGNFWKick.Kick
+version: 0.0.1
+author: Stijn van Nieulande
+description: NGNFWKick
+commands:
+   ad:
+      description: NGNFWKick commands
+      usage: /<command>
+      permission: ngnfw.Kick
+      permission-message: You don't have the premission to use the NGNFWKick commands.

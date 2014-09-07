@@ -1,0 +1,14 @@
+package me.Stijn.NGNFWBlockEffects.commands;
+
+import me.Stijn.NGNFWBlockEffects.menu.Menu;
+
+import org.bukkit.event.Listener;
+
+public class menu implements Listener {
+	
+	public static Menu Menu;
+	
+	if(args[0].equalsIgnoreCase("blocks")) {
+		menu.openGUI(p);
+	}   
+}

@@ -1,0 +1,11 @@
+name: NGNFWFireworkSign
+main: me.Stijn.NGNFWFireworkSign.FireworkSign
+version: 0.0.1
+author: Stijn van Nieulande
+description: NGNFWFireworkSign
+commands:
+   NGNFWFireworkSign:
+      description: NGNFWFireworkSign commands
+      usage: /ngnfwfireworksign
+      permission: ngnfw.fireworksign
+      permission-message: You don't have the premission to use the FireworkSign commands.

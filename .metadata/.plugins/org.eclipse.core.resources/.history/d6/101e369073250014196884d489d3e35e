@@ -1,0 +1,114 @@
+package me.Stijn.NGNFWLaunchPad;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.block.BlockFace;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
+
+public class LaunchPad extends JavaPlugin implements Listener{
+	
+	FileConfiguration config;
+	File cfile;
+    public final Logger logger = Logger.getLogger("Minecraft");
+    public PluginDescriptionFile pdfFile = getDescription();
+	
+	private ArrayList<Player> jumpers = new ArrayList<Player>();
+	public static Effect effectz = Effect.valueOf("STEP_SOUND");
+	
+	@Override
+	public void onEnable() {
+		logger.info("[" + pdfFile.getName() + "] v" + pdfFile.getVersion() + " is now enabled!");
+		Bukkit.getServer().getPluginManager().registerEvents(this, this);
+		config = getConfig();
+		config.options().copyDefaults(true);
+		saveConfig();
+		cfile = new File(getDataFolder(), "config.yml");
+		
+	}
+	
+	//COMMANDS
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	//reload command
+		if (cmd.getName().equalsIgnoreCase("NGNFWLaunchPadReload")) {
+			reloadConfig();
+			sender.sendMessage(ChatColor.BLUE + "N" + ChatColor.RED + "G" + ChatColor.GREEN + "N" + ChatColor.GOLD + "F" + ChatColor.RED + "W" + ChatColor.DARK_GRAY + "> LaunchPad >" + " " + ChatColor.WHITE + "Config reloaded.");
+			System.out.println("NGNFWLaunchPad > Config reloaded!");
+		}
+	//end of reload command
+	//information command
+		else if (cmd.getName().equalsIgnoreCase("NGNFWLaunchPad")) {
+			sender.sendMessage(ChatColor.AQUA + "-----=[ " + ChatColor.BLUE + "N" + ChatColor.RED + "G" + ChatColor.GREEN + "N" + ChatColor.GOLD + "F" + ChatColor.RED + "W" + ChatColor.AQUA + " ]=-----");
+			sender.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "This plugin is made by: " + ChatColor.BLUE + "" + ChatColor.ITALIC + pdfFile.getAuthors());
+			sender.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Version: " + ChatColor.BLUE + "" + ChatColor.ITALIC + pdfFile.getVersion());
+			sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.ITALIC +  "www.ngnfw.nl");
+			sender.sendMessage(ChatColor.AQUA + "-----=[ " + ChatColor.BLUE + "N" + ChatColor.RED + "G" + ChatColor.GREEN + "N" + ChatColor.GOLD + "F" + ChatColor.RED + "W" + ChatColor.AQUA + " ]=-----");
+		}
+	//end of information command
+		return true;
+	}
+	//end of COMMANDS
+	
+	@EventHandler
+	public void onJump(PlayerMoveEvent e) {
+		if (e.getTo().getBlock().getRelative(BlockFace.DOWN).getType() == Material.getMaterial(getConfig().getString("ItemMaterials.LaunchPad"))) {
+			e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().multiply(10));
+			e.getPlayer().setVelocity(new Vector(e.getPlayer().getVelocity().getBlockX(), 1.0D, e.getPlayer().getVelocity().getZ()));
+			Player player = e.getPlayer();
+			Location loc = player.getLocation();
+			loc.getWorld().playEffect(loc, Effect.SMOKE, 69);
+			loc.getWorld().playEffect(loc, Effect.MOBSPAWNER_FLAMES, 69);
+			jumpers.add(e.getPlayer());
+		}
+		if (e.getTo().getBlock().getRelative(BlockFace.DOWN).getType() == Material.getMaterial(getConfig().getString("ItemMaterials.Trampoline"))) {
+			e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().multiply(0));
+			e.getPlayer().setVelocity(new Vector(e.getPlayer().getVelocity().getBlockX(), 2.0D, e.getPlayer().getVelocity().getZ()));
+			Player player = e.getPlayer();
+			Location loc = player.getLocation();
+			loc.getWorld().playEffect(loc, Effect.EXPLOSION_LARGE, 69);
+			loc.getWorld().playEffect(loc, Effect.MOBSPAWNER_FLAMES, 69);
+			loc.getWorld().playSound(loc, Sound.ENDERMAN_TELEPORT, 69, 1);
+			jumpers.add(e.getPlayer());
+		}
+	}
+	
+	@EventHandler
+	public void onWalk(PlayerMoveEvent e) {
+		if (e.getTo().getBlock().getRelative(BlockFace.DOWN).getType() == Material.GLASS) {
+			Player player = e.getPlayer();
+			Location loc = player.getLocation();
+			loc.getWorld().playEffect(loc, Effect.COLOURED_DUST, 69);
+			loc.getWorld().playEffect(loc, Effect.NOTE, 69);
+			loc.getWorld().playSound(loc, Sound.NOTE_PIANO, 1, 1);
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerDamage(EntityDamageEvent e) {
+		if (e.getEntity() instanceof Player) {
+			Player p = (Player) e.getEntity();
+			if (e.getCause() == DamageCause.FALL && jumpers.contains(p)) {
+				e.setDamage(0.0);
+				jumpers.remove(p);
+			}
+		}
+	}
+}

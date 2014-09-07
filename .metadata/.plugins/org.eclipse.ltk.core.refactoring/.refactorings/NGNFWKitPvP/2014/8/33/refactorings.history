@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename package &apos;me.Stijn.KitPvP&apos; to &apos;me.Stijn.NGNFWKitPvP&apos;&#x0D;&#x0A;- Original project: &apos;NGNFWKitPvP&apos;&#x0D;&#x0A;- Original element: &apos;NGNFWKitPvP/src/me.Stijn.KitPvP&apos;&#x0D;&#x0A;- Renamed element: &apos;NGNFWKitPvP/src/me.Stijn.NGNFWKitPvP&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename package &apos;me.Stijn.KitPvP&apos;" flags="589830" hierarchical="false" id="org.eclipse.jdt.ui.rename.package" input="/src&lt;me.Stijn.KitPvP" name="me.Stijn.NGNFWKitPvP" qualified="false" references="true" stamp="1408276685805" textual="false" version="1.0"/>
+</session>

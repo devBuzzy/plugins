@@ -1,0 +1,10 @@
+name: NGNFWPortalGame
+main: me.Stijn.NGNFWPortalGame.Main
+version: 0.0.1
+author: Stijn van Nieulande
+description: NGNFWPortalGame
+commands:
+   Portal:
+      description: NGNFWPortalGame commands
+      permission: ngnfw.portalgame
+      permission-message: You don't have the premission to use the NGNFWPortalGame commands.

@@ -1,0 +1,11 @@
+name: Test
+main: me.KCNJexeld.Test.Test
+version: 0.0.1
+author: Stijn van Nieulande
+description: Test
+commands:
+   kcn:
+      description: KingsCraft Network commands
+      usage: /kcn
+      permission: kcn.kcn
+      permission-message: You don't have the premission to use the KCN commands.

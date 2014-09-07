@@ -1,0 +1,5 @@
+INDEX VERSION 1.126+C:\Users\win 7\Desktop\NGNFWPlugins\plugins\.metadata\.plugins\org.eclipse.jdt.core
+458644481.index
+1052178004.index
+3598434767.index
+3381747960.index

@@ -1,0 +1,11 @@
+name: NGNFWRankTag
+main: me.Stijn.NGNFWRankTag.Main
+version: 0.0.1
+author: Stijn van Nieulande
+description: NGNFWRankTag
+commands:
+   RankTag:
+      description: NGNFWRankTag commands
+      usage: /<command>
+      permission: ngnfw.RankTag
+      permission-message: You don't have the premission to use the RankTag commands.

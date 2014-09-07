@@ -1,0 +1,11 @@
+name: AnimatedMenu
+main: me.Stijn.AnimatedMenu.Main
+version: 0.0.1
+author: Stijn van Nieulande
+description: AnimatedMenu
+commands:
+   animatedmenu:
+      description: AnimatedMenu commands
+      usage: /animatedmenu
+      permission: AnimatedMenu.commands
+      permission-message: You don't have the premission to use the AnimatedMenu commands.

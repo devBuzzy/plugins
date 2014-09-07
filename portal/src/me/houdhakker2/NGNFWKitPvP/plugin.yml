@@ -1,0 +1,10 @@
+name: NGNFWKitPvP
+main: me.Stijn.NGNFWKitPvP.Main
+version: 0.0.1
+author: Stijn van Nieulande
+description: NGNFWKitPvP
+commands:
+   KitPvP:
+      description: NGNFWKitPvP commands
+      permission: ngnfw.kitpvp
+      permission-message: You don't have the premission to use the NGNFWKitPvP commands.

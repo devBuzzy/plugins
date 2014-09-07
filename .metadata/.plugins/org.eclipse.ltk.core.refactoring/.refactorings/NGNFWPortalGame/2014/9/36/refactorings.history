@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;SettingsManager.java&apos; to &apos;NGNFWBlockEffects/src/me.Stijn.NGNFWBlockEffects&apos;&#x0D;&#x0A;- Original project: &apos;NGNFWPortalGame&apos;&#x0D;&#x0A;- Destination element: &apos;NGNFWBlockEffects/src/me.Stijn.NGNFWBlockEffects&apos;&#x0D;&#x0A;- Original element: &apos;me.Stijn.NGNFWPortalGame.SettingsManager.java&apos;" description="Copy compilation unit" destination="=NGNFWBlockEffects/src&lt;me.Stijn.NGNFWBlockEffects" element1="/src&lt;me.Stijn.NGNFWPortalGame{SettingsManager.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1409859839257" units="1" version="1.0"/>
+</session>

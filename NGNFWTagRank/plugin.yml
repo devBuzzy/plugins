@@ -1,0 +1,11 @@
+name: NGNFWTagRank
+main: me.Stijn.NGNFWTagRank.Main
+version: 0.0.1
+author: Stijn van Nieulande
+description: NGNFWTagRank
+commands:
+   nametag:
+      description: NGNFWTagRank commands
+      usage: /<command>
+      permission: ngnfw.tagrank
+      permission-message: You don't have the premission to use the TagRank commands.

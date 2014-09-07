@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename package &apos;me.Stijn.TagRank&apos; to &apos;me.Stijn.NGNFWTagRank&apos;&#x0D;&#x0A;- Original project: &apos;NGNFWTagRank&apos;&#x0D;&#x0A;- Original element: &apos;NGNFWTagRank/src/me.Stijn.TagRank&apos;&#x0D;&#x0A;- Renamed element: &apos;NGNFWTagRank/src/me.Stijn.NGNFWTagRank&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename package &apos;me.Stijn.TagRank&apos;" flags="589830" hierarchical="false" id="org.eclipse.jdt.ui.rename.package" input="/src&lt;me.Stijn.TagRank" name="me.Stijn.NGNFWTagRank" qualified="false" references="true" stamp="1407603552178" textual="false" version="1.0"/>
+</session>
